@@ -1,0 +1,25 @@
+# Arquivos sensíveis ou específicos de ambiente
+.env
+
+# Dependências do Composer (pasta vendor que pode ser gerada)
+src/vendor/
+
+# Arquivos de log
+*.log
+
+# Arquivos temporários ou de backup
+*.bak
+*.swp
+
+# Sistema operacional ou editor de código
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Arquivos de cache de compilação do Composer
+composer.lock
+
+# Arquivos específicos de containers Docker que são temporários ou específicos do ambiente
+docker/*.log
+docker/.env
