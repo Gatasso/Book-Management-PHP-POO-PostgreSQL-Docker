@@ -1,47 +1,117 @@
 <?php 
 
 class User extends Config{
-    
-    public string $nome, $username, $senha;
-    public int $id;
+    private $attributes;
 
-    public function __construct(int $id, string $nome, string $username, string $senha){
-        $this->id = $id;   
-        $this->nome = $nome;   
-        $this->username = $username;   
-        $this->senha = $senha;   
+    public function __set($name, $value)
+    {
+        $this->attributes[$name] = $value;
+        return $this;
+    } 
+    public function __get($name)
+    {
+        if(isset($this->attributes[$name])){
+            return $this->attributes[$name];
+        }else{
+            return null;
+        }
     }
-
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function getNome(): string {
-        return $this->nome;
-    }
-    public function getUsername(): string {
-        return $this->username;
-    }
-    
-    public function getSenha(): string {
-        return $this->senha;
-    }
-    //****************************************************************************************************************************************//
-
-    public function setNome(string $nome): void {
-        $this->nome = $nome;
+    public function __isset($name)
+    {
+        return isset($this->attributes[$name]);
     }
 
-    public function setUsername(string $username): void {
-        $this->username = $username;
-    }
-    
-    public function setSenha(string $senha): void {
-        $this->senha = password_hash($senha,CRYPT_SHA256);
-    }
-//****************************************************************************************************************************************//
 
-    
+    public function save()
+    {
+        $data = $this->prepare($this->attributes);
+        if(!isset($this->id)){
+            $attrs = implode(", ", array_keys($data));
+            $values = implode(", ", array_values($data));
+            $query = "INSERT INTO Users ($attrs) VALUES ($values)";
+        }else{
+            foreach ($data as $key => $value) {
+                if ($key !== 'id') {
+                    $define[] = "{$key}={$value}";
+                }
+            }
+            $query = "UPDATE Users SET ".implode(', ', $define)." WHERE id='{$this->id}';";
+        }
+
+        if ($conn = Config::connect()){
+            $stmt= $conn->prepare($query);
+            if($stmt->execute()){
+                return $stmt->rowCount();
+            }
+        }
+        return false;
+    }
+
+    private function prepare($data)
+    {
+        $result = array();
+        foreach ($data as $key => $value) {
+            if (is_scalar($value)) {
+                $result[$key] = $this->escape($value);
+            }
+        }
+        return $result;
+    }
+
+    private function escape($data)
+    {
+        if (is_string($data) & !empty($data)) {
+            return "'".addslashes($data)."'";
+        } elseif (is_bool($data)) {
+            return $data ? 'TRUE' : 'FALSE';
+        } elseif ($data !== '') {
+            return $data;
+        } else {
+            return 'NULL';
+        }
+    }
+
+    public static function findAll()
+    {
+        $conn = Config::connect();
+        $stmt = $conn->prepare('SELECT * FROM Users');
+        $result = array();
+        if ($stmt->execute()) {
+            while ($rs = $stmt->fetchObject(User::class)) {
+                $result[] = $rs;
+            }
+        }
+        if (count($result) > 0) {
+            return $result;
+        } else{
+            return false;
+        }
+    }
+
+    public static function findById($id)
+    {
+        $conn = Config::connect();
+        $stmt = $conn->prepare("SELECT * FROM Users WHERE id= '{$id}'");
+        if ($stmt->execute()) {
+            if($stmt->rowCount() > 0){
+                $result = $stmt->fetchObject('User');
+                if ($result) {
+                    return $result;
+                }
+            }
+        } 
+        return false;
+    }
+
+    public static function deleteById($id)
+    {
+        $conn = Config::connect();
+        if ($conn->exec("DELETE FROM Users WHERE id='{$id}'")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 ?>

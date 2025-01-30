@@ -1,51 +1,117 @@
 <?php 
 
 class Book {
-    public string $nome, $autor, $editora;
-    public int $id, $numPaginas;
-    public bool $isRead;
+    private $attributes;
 
-    public function __construct(int $id, string $nome, string $autor, string $editora, int $numPaginas, $isRead) {
-        $this->nome = $nome;
-        $this->autor = $autor;
-        $this->editora = $editora;
-        $this->numPaginas = $numPaginas;
-        $this->isRead = $isRead;
+
+    public function __set($name, $value)
+    {
+        $this->attributes[$name] = $value;
+        return $this;
     }
 
-    public function getId(): int {
-        return $this->id;
-    }
-    public function getName(): string {
-        return $this->nome;
-    }
-    public function getAuthor(): string {
-        return $this->autor;
-    }
-    public function getEditora(): string {
-        return $this->editora;
-    }
-    public function getNumPaginas(): int {
-        return $this->numPaginas;
-    }
-    public function getIsRead(): string {
-        return $this->isRead;
+    public function __get($name)
+    {
+        if(isset($this->attributes[$name])){
+            return $this->attributes[$name];
+        } else {
+            return null;
+        }
     }
 
-    public function setName(string $nome): void {
-        $this->nome = $nome;
+    public function __isset($name)
+    {
+        return isset($this->attributes[$name]);
     }
-    public function setAuthor(string $autor): void {
-        $this->autor = $autor;
+
+    public function save()
+    {
+        $data = $this->prepare($this->attributes);
+        if(!isset($this->id)){
+            $attrs = implode(", ", array_keys($data));
+            $values = implode(", ", array_values($data));
+            $query = "INSERT INTO Books ($attrs) VALUES ($values)";
+        }else{
+            foreach ($data as $key => $value) {
+                if ($key !== 'id') {
+                    $define[] = "{$key}={$value}";
+                }
+            }
+            $query = "UPDATE Books SET ".implode(', ', $define)." WHERE id='{$this->id}';";
+        }
+
+        if ($conn = Config::connect()){
+            $stmt= $conn->prepare($query);
+            if($stmt->execute()){
+                return $stmt->rowCount();
+            }
+        }
+        return false;
     }
-    public function setEditora(string $editora): void {
-        $this->editora = $editora;
+
+    private function prepare($data)
+    {
+        $result = array();
+        foreach ($data as $key => $value) {
+            if (is_scalar($value)) {
+                $result[$key] = $this->escape($value);
+            }
+        }
+        return $result;
     }
-    public function setNumPaginas(int $numPaginas): void {
-        $this->numPaginas = $numPaginas;
+
+    private function escape($data)
+    {
+        if (is_string($data) & !empty($data)) {
+            return "'".addslashes($data)."'";
+        } elseif (is_bool($data)) {
+            return $data ? 'TRUE' : 'FALSE';
+        } elseif ($data !== '') {
+            return $data;
+        } else {
+            return 'NULL';
+        }
     }
-    public function setIsRead(bool $isRead): void {
-        $this->isRead = $isRead;
+
+    public static function findAll()
+    {
+        $conn = Config::connect();
+        $stmt = $conn->prepare('SELECT * FROM Books');
+        $result = array();
+        if ($stmt->execute()) {
+            while ($rs = $stmt->fetchObject(Book::class)) {
+                $result[] = $rs;
+            }
+        }
+        if (count($result) > 0) {
+            return $result;
+        } else{
+            return false;
+        }
+    }
+
+    public static function findById($id)
+    {
+        $conn = Config::connect();
+        $stmt = $conn->prepare("SELECT * FROM Books where id= '{$id}'");
+        if ($stmt->execute()) {
+            if($stmt->rowCount() > 0){
+                $result = $stmt->fetchObject('Book');
+                if ($result) {
+                    return $result;
+                }
+            }
+        } 
+        return false;
+    }
+
+    public static function deleteById($id)
+    {
+        $conn = Config::connect();
+        if($conn->exec("DELETE FROM Books WHERE id='{$id}'")){
+            return true;
+        }
+        return false;
     }
 
 }
