@@ -1,5 +1,6 @@
 # Arquivos sensíveis ou específicos de ambiente
 .env
+docker/.env
 
 # Dependências do Composer (pasta vendor que pode ser gerada)
 src/vendor/
@@ -23,3 +24,5 @@ composer.lock
 # Arquivos específicos de containers Docker que são temporários ou específicos do ambiente
 docker/*.log
 docker/.env
+docker/*.env
+src/config/*.env

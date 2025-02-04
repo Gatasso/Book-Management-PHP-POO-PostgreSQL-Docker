@@ -72,11 +72,12 @@ abstract class Model
         }
     }
 
-    public function findAll()
+    public static function findAll()
     {
+        $table = static::$table;
         if ($conn = Config::connect()) {
             $result = array();
-            $stmt = $conn->prepare('SELECT * from ' . $this->table);
+            $stmt = $conn->prepare('SELECT * from ' . $table);
             if($stmt->execute()){
                 while ($res = $stmt->fetchObject(Model::class)) {
                     $result[] = $res;
@@ -89,10 +90,11 @@ abstract class Model
         return false;
     }
 
-    public function findById($id)
+    public static function findById($id)
     {
+        $table = static::$table;
         if($conn = Config::connect()){
-            $stmt = $conn->prepare("SELECT * from {$this->table} WHERE id={$id})");
+            $stmt = $conn->prepare("SELECT * from {$table} WHERE id={$id})");
             if($stmt->execute()){
                 if ($stmt->rowCount() > 0) {
                     $res = $stmt->fetchObject('Model');
@@ -105,10 +107,11 @@ abstract class Model
         }
     }
 
-    public function deleteById($id)
+    public static function deleteById($id)
     {
+        $table = static::$table;
         if($conn = Config::connect()){
-            $stmt = $conn->prepare("DELETE FROM {$this->table} WHERE id={$id}");
+            $stmt = $conn->prepare("DELETE FROM {$table} WHERE id={$id}");
             if($stmt->execute()){
                 return true;
             } else {
