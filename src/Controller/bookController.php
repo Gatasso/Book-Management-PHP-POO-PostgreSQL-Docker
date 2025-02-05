@@ -1,10 +1,11 @@
 <?php 
+// include_once("./controller.php");
 class BookController extends Controller
 {
     public function list()
     {
         $books = Book::findAll();
-        return $this->view('grade',$books);
+        return ['books' => $books];
     }
 
     public function create()
@@ -19,9 +20,11 @@ class BookController extends Controller
         return $this->view('form', ['book' => $book]);
     }
 
-    public function save()
+    public function save($data)
     {
-        $book = new Book;
+        $id = isset($data['id']) ? $data['id'] : null;
+        $book = $id ? Book::findById($id) : new Book;
+
         $book->title = $this->request->title;
         $book->author = $this->request->author;
         $book->publisher = $this->request->publisher;
@@ -29,24 +32,9 @@ class BookController extends Controller
         $book->category = $this->request->category;
         $book->isRead = $this->request->is_read;
 
-        if ($book->save()){
+        if ($book->save()) {
             return $this->list();
         }
-    }
-
-    public function update($data)
-    {
-        $id = $data['id'];
-        $book = Book::findById($id);
-        $book = new Book;
-        $book->title = $this->request->title;
-        $book->author = $this->request->author;
-        $book->publisher = $this->request->publisher;
-        $book->numPages = $this->request->num_pages;
-        $book->category = $this->request->category;
-        $book->isRead = $this->request->is_read;
-
-        return $this->list();
     }
 
     public function delete($data)
