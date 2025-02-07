@@ -57,10 +57,10 @@ spl_autoload_register(function($class) {
         } else {
             echo '<nav><ul><li><a href="./index.php">Início</a></li>';
             echo '<li><a href="./index.php?controller=BookController&method=create">Adicionar Livro</a></li>';
-            echo '<li><a href="./index.php?controller=BookController&method=list">Listar Livros</a></li></ul></nav>'; 
+            echo '<li><a href="./index.php?controller=BookController&method=list">Listar Livros</a></li>'; 
+            echo '<li><a href="./index.php?controller=UserController&method=create">Adicionar User</a></li>';
+            echo '<li><a href="./index.php?controller=UserController&method=list">Listar Users</a></li></ul></nav>'; 
         }
     ?>
-
-
     </body>
 </html>

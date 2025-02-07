@@ -1,7 +1,7 @@
 <?php 
 
 class User extends Model{
-    protected static $table = "Users";
+    protected static $table = "users";
 }
 
 ?>
