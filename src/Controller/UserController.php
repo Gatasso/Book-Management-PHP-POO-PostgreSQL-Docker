@@ -18,7 +18,7 @@ class UserController extends Controller
         $user->name = $this->request->name;
         $user->username = $this->request->username;
         $user->email = $this->request->email;
-        $user->password = $this->request->password;
+        $user->password = password_hash($this->request->password, PASSWORD_BCRYPT);
 
         if ($user->save()) {
             return $this->list();
@@ -41,7 +41,7 @@ class UserController extends Controller
             $user->name = $this->request->name;
             $user->username = $this->request->username;
             $user->email = $this->request->email;
-            $user->password = $this->request->password;
+            $user->password = password_hash($this->request->password, PASSWORD_BCRYPT);
 
             if($user->save()){
                 return $this->list();
