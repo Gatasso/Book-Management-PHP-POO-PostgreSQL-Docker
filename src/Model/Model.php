@@ -51,7 +51,6 @@ abstract class Model
         $table = static::$table;
         $data = $this->prepareData($this->attributes);
         if (!isset($this->id)) {
-            echo($table .'\n');
             print_r(array_keys($data));
             print_r(array_values($data));
             $query = "INSERT INTO " . $table . 
@@ -89,7 +88,7 @@ abstract class Model
                 while ($res = $stmt->fetchObject($class)) {
                     $result[] = $res;
                 }
-            }  
+            }
             if (count($result) > 0) {
                 return $result; 
             }

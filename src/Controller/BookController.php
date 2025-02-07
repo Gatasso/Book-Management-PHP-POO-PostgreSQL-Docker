@@ -16,7 +16,6 @@ class BookController extends Controller
     {
         $id = (int) $id;
         $book = Book::findById($id);
-        var_dump($book);
         return $this->view('form', ['book' => $book]);
     }
 
@@ -39,9 +38,7 @@ class BookController extends Controller
     public function update($id)
     {
         $id = (int) $id;
-        echo($id);
         $book = Book::findById($id);
-        var_dump($book);
 
         $book->title = $this->request->title;
         $book->author = $this->request->author;

@@ -18,7 +18,7 @@
                 
                 echo "Número de livros: " . count($books);
                 
-                foreach ($books as $book) {  // Itera nos livros retornados pelo controlador
+                foreach ($books as $book) {  
                     echo "<tr>
                     <td>{$book->id}</td>
                     <td>{$book->title}</td>
