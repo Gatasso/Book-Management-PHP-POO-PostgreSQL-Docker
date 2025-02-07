@@ -2,7 +2,7 @@
 
 abstract class Model
 {
-    private $attributes = [];
+    private $attributes;
     protected static $table;
 
     public function __set($name, $value)
@@ -31,6 +31,7 @@ abstract class Model
                 $res[$key] = $this->cleanData($value);
             }
         }
+        return $res;
     }
     protected function cleanData($value)
     {
@@ -47,18 +48,22 @@ abstract class Model
 
     public function save()
     {
+        $table = static::$table;
         $data = $this->prepareData($this->attributes);
         if (!isset($this->id)) {
-            $query = "INSERT INTO " . $this->table . 
-            " (" . implode(', ', array_keys($this->data)) . ") VALUES " . 
-            "('" . implode("', '", array_values($this-> data)) . "')";
+            echo($table .'\n');
+            print_r(array_keys($data));
+            print_r(array_values($data));
+            $query = "INSERT INTO " . $table . 
+                " (" . implode(', ', array_keys($data)) . ") VALUES " . 
+                "(" . implode(", ", array_values($data)) . ")";
         } else {
-            foreach ($this->data as $key => $value) {
+            foreach ($data as $key => $value) {
                 if ($key !== 'id') {
                     $auxArray[] = "{$key}={$value}";
                 }
             }
-            $query = "UPDATE ". $this->table . 
+            $query = "UPDATE ". $table . 
             " SET " . implode(',', $auxArray) .
             " WHERE id='{$this->id}'";
         }
@@ -79,26 +84,29 @@ abstract class Model
         if ($conn = Config::connect()) {
             $result = array();
             $stmt = $conn->prepare('SELECT * from ' . $table);
+            $class = get_called_class();
             if($stmt->execute()){
-                while ($res = $stmt->fetchObject(Model::class)) {
+                while ($res = $stmt->fetchObject($class)) {
                     $result[] = $res;
                 }
             }  
             if (count($result) > 0) {
-                return $result;
+                return $result; 
             }
         }
         return false;
     }
+    
 
     public static function findById($id)
     {
         $table = static::$table;
         if($conn = Config::connect()){
-            $stmt = $conn->prepare("SELECT * from {$table} WHERE id={$id})");
+            $stmt = $conn->prepare("SELECT * from {$table} WHERE id={$id}");
+            $class = get_called_class();
             if($stmt->execute()){
                 if ($stmt->rowCount() > 0) {
-                    $res = $stmt->fetchObject('Model');
+                    $res = $stmt->fetchObject($class);
                     if ($res) {
                         return $res;
                     }
