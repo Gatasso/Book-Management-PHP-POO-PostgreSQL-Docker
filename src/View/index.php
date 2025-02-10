@@ -34,6 +34,7 @@ spl_autoload_register(function($class) {
             $controllerName = isset($_GET['controller']) ? ucfirst($_GET['controller']) : null;
             $method = isset($_GET['method']) ? $_GET['method'] : null;
 
+            echo($controllerName . " | " . $method);
             $controllerClass = "$controllerName";
 
             if ($controllerName && class_exists($controllerClass)) {

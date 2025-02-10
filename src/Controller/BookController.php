@@ -59,5 +59,19 @@ class BookController extends Controller
             return $this->list();
         }
     }
+
+    public function findByUserId($id)
+    {
+        if(isset($id) && $id > 0){
+            $id = (int) $id;
+            if($books = Book::findByUserId($id)){
+                return $this->view('grade', ['books' => $books]);
+            } else {
+                $this->list();
+            }
+        } else {
+            $this->list();
+        }
+    }
 }
 ?>

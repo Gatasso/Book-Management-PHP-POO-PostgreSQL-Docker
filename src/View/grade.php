@@ -1,5 +1,15 @@
 <div>
     <h1>Lista de Livros</h1>
+
+    <form action="./index.php" method="GET">
+        <input type="hidden" name="controller" value="BookController">
+        <input type="hidden" name="method" value="findByUserId">
+        
+        <label for="id">ID User:</label>
+        <input type="number" name="id" id="id" value= <?= $user->id ?? '' ?>>
+        <button type="submit">Filtrar</button>
+    </form>
+
     <table border="1">
         <thead>
             <tr>
@@ -17,6 +27,7 @@
             <?php
                 
                 echo "Número de livros: " . count($books);
+
                 
                 foreach ($books as $book) {  
                     echo "<tr>
