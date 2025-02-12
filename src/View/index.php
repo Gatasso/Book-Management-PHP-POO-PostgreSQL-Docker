@@ -34,7 +34,7 @@ spl_autoload_register(function($class) {
             $controllerName = isset($_GET['controller']) ? ucfirst($_GET['controller']) : null;
             $method = isset($_GET['method']) ? $_GET['method'] : null;
 
-            echo($controllerName . " | " . $method);
+            // echo($controllerName . " | " . $method);
             $controllerClass = "$controllerName";
 
             if ($controllerName && class_exists($controllerClass)) {
@@ -56,11 +56,7 @@ spl_autoload_register(function($class) {
                 echo "Controller não encontrado!";
             }
         } else {
-            echo '<nav><ul><li><a href="./index.php">Início</a></li>';
-            echo '<li><a href="./index.php?controller=BookController&method=create">Adicionar Livro</a></li>';
-            echo '<li><a href="./index.php?controller=BookController&method=list">Listar Livros</a></li>'; 
-            echo '<li><a href="./index.php?controller=UserController&method=create">Adicionar User</a></li>';
-            echo '<li><a href="./index.php?controller=UserController&method=list">Listar Users</a></li></ul></nav>'; 
+            include_once("./navbar.php");
         }
     ?>
     </body>

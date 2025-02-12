@@ -4,19 +4,19 @@ class BookController extends Controller
     public function list()
     {
         $books = Book::findAll();
-        return $this->view('grade',['books' => $books]);
+        return $this->view('bookList',['books' => $books]);
     }
 
     public function create()
     {
-        return $this->view('form');
+        return $this->view('bookForm');
     }
 
     public function edit($id)
     {
         $id = (int) $id;
         $book = Book::findById($id);
-        return $this->view('form', ['book' => $book]);
+        return $this->view('bookForm', ['book' => $book]);
     }
 
     public function save()
@@ -28,7 +28,6 @@ class BookController extends Controller
         $book->publisher = $this->request->publisher;
         $book->num_pages = $this->request->num_pages;
         $book->category = $this->request->category;
-        $book->is_read = $this->request->is_read;
 
         if ($book->save()) {
             return $this->list();
@@ -45,7 +44,6 @@ class BookController extends Controller
         $book->publisher = $this->request->publisher;
         $book->num_pages = $this->request->num_pages;
         $book->category = $this->request->category;
-        $book->is_read = $this->request->is_read;
 
         $book->save();
         return $this->list();
@@ -57,20 +55,6 @@ class BookController extends Controller
         $id = (int)$id;
         if (Book::deleteById($id)) {
             return $this->list();
-        }
-    }
-
-    public function findByUserId($id)
-    {
-        if(isset($id) && $id > 0){
-            $id = (int) $id;
-            if($books = Book::findByUserId($id)){
-                return $this->view('grade', ['books' => $books]);
-            } else {
-                $this->list();
-            }
-        } else {
-            $this->list();
         }
     }
 }

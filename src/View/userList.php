@@ -1,3 +1,4 @@
+<?php include_once("./navbar.php")?>
 <section>
     <h2>Lista dos Usuários</h2>
 

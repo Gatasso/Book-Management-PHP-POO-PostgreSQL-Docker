@@ -1,3 +1,4 @@
+<?php include_once("./navbar.php")?>
 <div>
     <h2>Criar/Editar Usuário</h2>
     <?php 
