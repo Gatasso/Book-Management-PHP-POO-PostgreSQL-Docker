@@ -15,7 +15,7 @@ abstract class Model
         if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         } else{
-            return false;
+            return null;
         }
     }
     public function __isset($name)
@@ -51,8 +51,8 @@ abstract class Model
         $table = static::$table;
         $data = $this->prepareData($this->attributes);
         if (!isset($this->id)) {
-            print_r(array_keys($data));
-            print_r(array_values($data));
+            // print_r(array_keys($data));
+            // print_r(array_values($data));
             $query = "INSERT INTO " . $table . 
                 " (" . implode(', ', array_keys($data)) . ") VALUES " . 
                 "(" . implode(", ", array_values($data)) . ")";
@@ -72,7 +72,7 @@ abstract class Model
             if ($stmt->execute()) {
                 return $stmt->rowCount();
             } else{
-                return false;
+                return null;
             }
         }
     }
@@ -93,7 +93,7 @@ abstract class Model
                 return $result; 
             }
         }
-        return false;
+        return null;
     }
     
 
@@ -110,8 +110,9 @@ abstract class Model
                         return $res;
                     }
                 }
+                return null;
             }
-            return false;
+            return null;
         }
     }
 
@@ -123,7 +124,7 @@ abstract class Model
             if($stmt->execute()){
                 return true;
             } else {
-                return false;
+                return null;
             }
         }
     }
