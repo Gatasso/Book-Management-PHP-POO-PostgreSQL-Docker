@@ -41,8 +41,7 @@
                     <td>
                     <a href='./index.php?controller=BookController&method=edit&id={$book->id}'>Editar</a> |
                     <a href='./index.php?controller=BookController&method=delete&id={$book->id}'>Excluir</a> |
-                    // TODO: Implementar ID usuario passando pela requisição
-                    <a href='./index.php?controller=UserBookController&method=addBook&id_book={$book->id}&id_user=3'>Adicionar à Lista</a>
+                    <a href='./index.php?controller=UserBookController&method=addBook&id_book={$book->id}&id_user={$_COOKIE['LoggedUserId']}'>Adicionar à Lista</a>
                     </td>
                     </tr>";
                 }

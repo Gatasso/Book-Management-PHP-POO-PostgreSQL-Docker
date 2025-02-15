@@ -6,7 +6,7 @@ class UserBookController extends Controller
     public function list($id)
     {
         $userbooks = UserBook::findByUserId($id);
-        return $this->view('bookList', ['books' => $userbooks]);
+        return $this->view('userBookList', ['books' => $userbooks]);
     }
 
     public function findByUserId($id)
@@ -29,7 +29,7 @@ class UserBookController extends Controller
     public function addBook($data)
     {
         $id_book = (int) $data['id_book'];
-        $register = UserBook::findByUserId($data['id_user']);
+        $register = UserBook::findByUserId($data['id_user']) ?? [];
         foreach ($register as $book) {
             if($book->id_book == $id_book){
                 return $this->list($book->id_user);

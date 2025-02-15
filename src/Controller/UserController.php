@@ -18,7 +18,7 @@ class UserController extends Controller
         $user->name = $this->request->name;
         $user->username = $this->request->username;
         $user->email = $this->request->email;
-        $user->password = password_hash($this->request->password, PASSWORD_BCRYPT);
+        $user->password = trim(password_hash($this->request->password, PASSWORD_BCRYPT));
 
         if ($user->save()) {
             return $this->list();
@@ -41,7 +41,8 @@ class UserController extends Controller
             $user->name = $this->request->name;
             $user->username = $this->request->username;
             $user->email = $this->request->email;
-            $user->password = password_hash($this->request->password, PASSWORD_BCRYPT);
+            $user->password = trim(password_hash($this->request->password, PASSWORD_BCRYPT));
+            var_dump($user->password);
 
             if($user->save()){
                 return $this->list();
@@ -59,6 +60,23 @@ class UserController extends Controller
         }
     }
 
+    public function login($data)
+    {
+        $user = User::findByEmail($data['email']);
+
+        if($user) {
+            if(password_verify($data['password'], trim($user->password))){
+                $user_books = UserBook::findByUserId($user->id);
+                setcookie("LoggedUserId", $user->id, (time() + 3600));
+                return $this->view('userBookList' , ['books' => $user_books]);
+                var_dump($_COOKIE);
+            } else {
+                echo("Senha incorreta");
+            }
+        } else{
+            echo("Email " . $data['email'] . " não encontrado.");
+        } 
+    }
 }
 
 ?>
